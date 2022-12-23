@@ -18,6 +18,7 @@ import ma.wanam.youtubeadaway.utils.Utils;
 
 public class Xposed implements IXposedHookLoadPackage {
 
+
     @Override
     public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {
 
@@ -25,7 +26,8 @@ public class Xposed implements IXposedHookLoadPackage {
             try {
                 String ytVersion = Utils.getPackageVersion(lpparam);
                 XposedBridge.log("Hooking YouTube version: " + lpparam.packageName + " " + ytVersion);
-                new BFAsync().execute(lpparam);
+                new DexHook(lpparam);
+               // new BFAsync().execute(lpparam);
             } catch (Throwable t) {
                 XposedBridge.log(t);
             }
@@ -42,8 +44,5 @@ public class Xposed implements IXposedHookLoadPackage {
         }
 
     }
-
-
-
 
 }

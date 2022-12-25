@@ -41,7 +41,10 @@ public class DynamicHook {
             "landscape_image_wide_button_layout",
             "carousel_ad",
             "in_feed_survey",
-            "compact_banner"
+            "compact_banner",
+            "medical_panel",
+            "paid_content_overlay",
+            "product_carousel"
     })).append(").*").toString();
 
     private static final String filterIgnore = new StringBuffer().append(".*(").append(String.join("|",new String[]{
@@ -141,8 +144,8 @@ public class DynamicHook {
         try {
             List<DexMethodDescriptor> result = dexKitBridge.findMethodUsingString("markFillRequested", false, "", "", "", null, true, null);
             if (result.size() > 0) {
-                Method fmethod = result.get(0).getMethodInstance(lpparam.classLoader);
-                XposedBridge.hookMethod(fmethod, XC_MethodReplacement.returnConstant(null));
+                Method method = result.get(0).getMethodInstance(lpparam.classLoader);
+                XposedBridge.hookMethod(method, XC_MethodReplacement.returnConstant(null));
                 XposedBridge.log("YoutubeAdway: adsInVideo Hooked class:" + result.get(0));
                 XposedBridge.log("YoutubeAdway: adsInVideo Hooked in " + Duration.between(start, Instant.now()).getSeconds() + " seconds!");
             }
@@ -168,6 +171,7 @@ public class DynamicHook {
                 ).collect(Collectors.toList());
                 if(fMethods.isEmpty())continue;
                 emptyComponentMethod = fMethods.get(0);
+                break;
             }
 
             if (emptyComponentMethod == null) {
@@ -177,7 +181,7 @@ public class DynamicHook {
             }
 
             result = dexKitBridge.findMethodUsingString("Error while converting", false, "", "", "", null, true, null);
-            if (result.size() > 0) {
+            if (!result.isEmpty()) {
                 Method fmethod = result.get(0).getMethodInstance(lpparam.classLoader);
                 hookGeneralMethods(fmethod, emptyComponentMethod);
                 XposedBridge.log("YoutubeAdway: AdsInGeneral Hooked class:" + result.get(0));
